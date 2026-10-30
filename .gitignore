@@ -1,0 +1,12 @@
+# Backend
+backend/target/
+backend/*.db
+backend/*.db-journal
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Editores
+.idea/
+.DS_Store

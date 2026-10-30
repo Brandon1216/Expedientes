@@ -1,0 +1,154 @@
+import { useCallback, useEffect, useState } from 'react';
+import { api, STATUS, formatoFecha } from '../api.js';
+import Icono from '../components/Icono.jsx';
+import { useAvisos } from '../components/Avisos.jsx';
+import Carpeta from '../components/Carpeta.jsx';
+
+const FILTROS = [
+  { valor: '', etiqueta: 'Todos', clave: 'total' },
+  { valor: 'ACTIVO', etiqueta: 'Activos', clave: 'activos' },
+  { valor: 'INACTIVO', etiqueta: 'Inactivos', clave: 'inactivos' },
+];
+
+export default function Expedientes({ usuario }) {
+  const avisar = useAvisos();
+  const [lista, setLista] = useState([]);
+  const [resumen, setResumen] = useState(null);
+  const [texto, setTexto] = useState('');
+  const [status, setStatus] = useState('');
+  const [cargando, setCargando] = useState(true);
+  const [abierto, setAbierto] = useState(null); // expediente en la carpeta, o {} para uno nuevo
+
+  const cargar = useCallback(async () => {
+    try {
+      const [datos, res] = await Promise.all([api.expedientes(texto, status), api.resumen()]);
+      setLista(datos);
+      setResumen(res);
+    } catch (err) {
+      avisar(err.message, 'error');
+    } finally {
+      setCargando(false);
+    }
+  }, [texto, status, avisar]);
+
+  // Espera un momento después de teclear antes de buscar
+  useEffect(() => {
+    const t = setTimeout(cargar, texto ? 250 : 0);
+    return () => clearTimeout(t);
+  }, [cargar, texto]);
+
+  const alGuardar = (mensaje) => {
+    avisar(mensaje);
+    setAbierto(null);
+    cargar();
+  };
+
+  return (
+    <section className="pagina">
+      <header className="pagina-cabeza">
+        <div>
+          <h1>Expedientes</h1>
+          <p className="pagina-sub">Busca, abre y actualiza cualquier expediente.</p>
+        </div>
+        <button className="boton boton-primario" onClick={() => setAbierto({})}>
+          <Icono nombre="mas" tamano={16} /> Nuevo expediente
+        </button>
+      </header>
+
+      <div className="barra">
+        <div className="filtros" role="tablist" aria-label="Filtrar por status">
+          {FILTROS.map((f) => (
+            <button
+              key={f.valor}
+              role="tab"
+              aria-selected={status === f.valor}
+              className={status === f.valor ? 'activo' : ''}
+              onClick={() => setStatus(f.valor)}
+            >
+              {f.etiqueta}
+              <span className="cuenta">{resumen ? resumen[f.clave] : '–'}</span>
+            </button>
+          ))}
+        </div>
+
+        <label className="buscador">
+          <Icono nombre="buscar" tamano={16} />
+          <input
+            type="search"
+            placeholder="Buscar por número, nombre, solicitud, secretaría o teléfono"
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            aria-label="Buscar expedientes"
+          />
+        </label>
+      </div>
+
+      <div className="tabla-marco">
+        {cargando ? (
+          <div className="vacio">Cargando…</div>
+        ) : lista.length === 0 ? (
+          <div className="vacio">
+            {texto || status ? (
+              <>
+                <strong>Sin resultados</strong>
+                <p>Prueba con otro término o quita el filtro de status.</p>
+              </>
+            ) : (
+              <>
+                <strong>Aún no hay expedientes</strong>
+                <p>Crea el primero para empezar a llevar el control.</p>
+                <button className="boton boton-primario" onClick={() => setAbierto({})}>
+                  <Icono nombre="mas" tamano={16} /> Nuevo expediente
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th className="col-folio">Número</th>
+                <th>Nombre y apellido</th>
+                <th className="col-asunto">Solicitud</th>
+                <th className="col-asunto">Secretaría asignada</th>
+                <th>Status</th>
+                <th className="col-fecha">Ingreso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lista.map((e) => (
+                <tr
+                  key={e.id}
+                  onClick={() => setAbierto(e)}
+                  onKeyDown={(ev) => ev.key === 'Enter' && setAbierto(e)}
+                  tabIndex={0}
+                >
+                  <td className="folio col-folio">{e.numero}</td>
+                  <td className="titular">
+                    <span className="folio folio-movil">{e.numero}</span>
+                    {e.nombre}
+                  </td>
+                  <td className="col-asunto atenuado">{e.solicitud}</td>
+                  <td className="col-asunto atenuado">{e.secretaria}</td>
+                  <td>
+                    <span className={`estado estado-${e.status}`}>{STATUS[e.status]}</span>
+                  </td>
+                  <td className="col-fecha atenuado numero">{formatoFecha(e.fechaIngreso)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {abierto && (
+        <Carpeta
+          expediente={abierto}
+          esAdmin={usuario.rol === 'ADMIN'}
+          onCerrar={() => setAbierto(null)}
+          onGuardado={alGuardar}
+        />
+      )}
+    </section>
+  );
+}
