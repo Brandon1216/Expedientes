@@ -18,7 +18,8 @@ public class UsuarioRepository {
             rs.getString("password_hash"),
             rs.getString("rol"),
             rs.getInt("activo") == 1,
-            rs.getString("creado_en")
+            rs.getString("creado_en"),
+            rs.getInt("debe_cambiar_password") == 1
     );
 
     private final JdbcTemplate jdbc;
@@ -61,7 +62,11 @@ public class UsuarioRepository {
     }
 
     public void cambiarPassword(long id, String passwordHash) {
-        jdbc.update("UPDATE usuarios SET password_hash = ? WHERE id = ?", passwordHash, id);
+        jdbc.update("UPDATE usuarios SET password_hash = ?, debe_cambiar_password = 0 WHERE id = ?", passwordHash, id);
+    }
+
+    public void exigirCambioPassword(long id) {
+        jdbc.update("UPDATE usuarios SET debe_cambiar_password = 1 WHERE id = ?", id);
     }
 
     public void eliminar(long id) {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { api, formatoFecha } from '../api.js';
+import { api, formatoFecha, iniciales } from '../api.js';
+import CampoClave from '../components/CampoClave.jsx';
 import Icono from '../components/Icono.jsx';
 import Dialogo, { Confirmar } from '../components/Dialogo.jsx';
 import { useAvisos } from '../components/Avisos.jsx';
@@ -40,6 +41,7 @@ export default function Usuarios({ yo }) {
       </header>
 
       <div className="tabla-marco">
+        <div className="tabla-cuerpo">
         <table className="tabla tabla-fija">
           <thead>
             <tr>
@@ -53,9 +55,14 @@ export default function Usuarios({ yo }) {
           <tbody>
             {lista.map((u) => (
               <tr key={u.id} className={u.activo ? '' : 'inactivo'}>
-                <td className="titular">
-                  {u.nombre}
-                  {u.id === yo.id && <span className="tu">tú</span>}
+                <td>
+                  <div className="persona">
+                    <span className="avatar">{iniciales(u.nombre)}</span>
+                    <div className="titular">
+                      {u.nombre}
+                      {u.id === yo.id && <span className="tu">tú</span>}
+                    </div>
+                  </div>
                 </td>
                 <td className="atenuado">{u.usuario}</td>
                 <td>
@@ -81,6 +88,7 @@ export default function Usuarios({ yo }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {editando && (
@@ -140,10 +148,10 @@ function FormularioUsuario({ usuario, esYo, onCerrar, onGuardado }) {
 
   return (
     <Dialogo titulo={nuevo ? 'Nuevo usuario' : `Editar a ${usuario.nombre}`} onCerrar={onCerrar}>
-      <form className="formulario" onSubmit={guardar}>
+      <form className="formulario" onSubmit={guardar} autoComplete="off">
         <label className="campo">
           <span>Nombre completo</span>
-          <input value={form.nombre} onChange={cambiar('nombre')} required autoFocus />
+          <input value={form.nombre} onChange={cambiar('nombre')} autoComplete="off" required autoFocus />
         </label>
 
         <label className="campo">
@@ -151,6 +159,7 @@ function FormularioUsuario({ usuario, esYo, onCerrar, onGuardado }) {
           <input
             value={form.usuario}
             onChange={cambiar('usuario')}
+            autoComplete="off"
             required
             disabled={!nuevo}
             pattern="[A-Za-z0-9._\-]+"
@@ -161,13 +170,12 @@ function FormularioUsuario({ usuario, esYo, onCerrar, onGuardado }) {
 
         <label className="campo">
           <span>{nuevo ? 'Contraseña' : 'Contraseña nueva'}</span>
-          <input
-            type="password"
+          <CampoClave
+            campo="clave-usuario"
             value={form.password}
             onChange={cambiar('password')}
             minLength={6}
             required={nuevo}
-            autoComplete="new-password"
           />
           {!nuevo && <small>Déjala vacía para conservar la actual.</small>}
         </label>

@@ -27,7 +27,12 @@ export default function Dialogo({ titulo, onCerrar, children, ancho = 420 }) {
 export function Confirmar({ titulo, mensaje, accion = 'Eliminar', onConfirmar, onCerrar }) {
   return (
     <Dialogo titulo={titulo} onCerrar={onCerrar} ancho={380}>
-      <p className="dialogo-texto">{mensaje}</p>
+      <div className="dialogo-aviso">
+        <span className="dialogo-icono">
+          <Icono nombre="alerta" />
+        </span>
+        <p className="dialogo-texto">{mensaje}</p>
+      </div>
       <div className="acciones">
         <button className="boton boton-suave" onClick={onCerrar}>
           Cancelar

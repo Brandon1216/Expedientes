@@ -2,10 +2,15 @@
 backend/target/
 backend/*.db
 backend/*.db-journal
+# Página compilada por `npm run build`
+backend/src/main/resources/static/
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
+
+# Programa empaquetado por empaquetar.ps1
+dist/
 
 # Editores
 .idea/

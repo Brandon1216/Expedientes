@@ -5,7 +5,18 @@ CREATE TABLE IF NOT EXISTS usuarios (
     password_hash TEXT    NOT NULL,
     rol           TEXT    NOT NULL CHECK (rol IN ('ADMIN', 'USUARIO')),
     activo        INTEGER NOT NULL DEFAULT 1,
-    creado_en     TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+    creado_en     TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    debe_cambiar_password INTEGER NOT NULL DEFAULT 0
+);
+
+-- Registro de los respaldos copiados a USB
+CREATE TABLE IF NOT EXISTS copias_usb (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    fecha    TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    unidad   TEXT    NOT NULL,
+    archivo  TEXT    NOT NULL,
+    bytes    INTEGER NOT NULL,
+    usuario  TEXT    NOT NULL
 );
 
 -- Las bases con el formato anterior (titular, asunto...) las convierte DatosIniciales al arrancar.

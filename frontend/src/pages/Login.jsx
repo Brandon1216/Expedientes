@@ -1,5 +1,18 @@
 import { useState } from 'react';
 import { api } from '../api.js';
+import CampoClave from '../components/CampoClave.jsx';
+
+// Panel con el escudo, compartido con la pantalla de contraseña nueva.
+export function MarcaLogin() {
+  return (
+    <aside className="login-marca">
+      <img className="login-logo" src="/logo.png" alt="S.U.T.S.P.E.M.I.D.B.C." />
+      <strong>Sistema de Expedientes</strong>
+      <span>S.U.T.S.P.E.M.I.D.B.C.</span>
+      <em>Por un Estado al servicio del pueblo</em>
+    </aside>
+  );
+}
 
 export default function Login({ onEntrar }) {
   const [usuario, setUsuario] = useState('');
@@ -21,19 +34,25 @@ export default function Login({ onEntrar }) {
 
   return (
     <main className="login">
-      <form className="login-carpeta" onSubmit={enviar}>
-        <img className="login-logo" src="/logo.png" alt="S.U.T.S.P.E.M.I.D.B.C." />
-        <div className="login-pestana">Expedientes</div>
+      <MarcaLogin />
+
+      <form className="login-panel" onSubmit={enviar} autoComplete="off">
         <div className="login-cuerpo">
-          <h1>Inicia sesión</h1>
-          <p className="login-sub">Entra con el usuario que te asignó el administrador.</p>
+          <div>
+            <h1>Inicia sesión</h1>
+            <p className="login-sub">Entra con el usuario que te asignó el administrador.</p>
+          </div>
 
           <label className="campo">
             <span>Usuario</span>
             <input
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
-              autoComplete="username"
+              data-campo="usuario"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
               autoFocus
               required
             />
@@ -41,13 +60,7 @@ export default function Login({ onEntrar }) {
 
           <label className="campo">
             <span>Contraseña</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
+            <CampoClave campo="clave" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </label>
 
           {error && <p className="error">{error}</p>}

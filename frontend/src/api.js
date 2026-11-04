@@ -1,10 +1,18 @@
 // Cliente para hablar con el backend de Java.
 const CLAVE_TOKEN = 'expedientes.token';
 
+// La sesión vive solo en esta pestaña: al cerrarla o volver a abrir la app se piden las credenciales.
+// sessionStorage no basta: el navegador puede devolverlo al restaurar una pestaña cerrada,
+// así que solo se conserva cuando la página se recarga (F5).
+localStorage.removeItem(CLAVE_TOKEN); // versiones anteriores la dejaban guardada para siempre
+if (performance.getEntriesByType('navigation')[0]?.type !== 'reload') {
+  sessionStorage.removeItem(CLAVE_TOKEN);
+}
+
 export const sesion = {
-  token: () => localStorage.getItem(CLAVE_TOKEN),
-  guardar: (token) => localStorage.setItem(CLAVE_TOKEN, token),
-  borrar: () => localStorage.removeItem(CLAVE_TOKEN),
+  token: () => sessionStorage.getItem(CLAVE_TOKEN),
+  guardar: (token) => sessionStorage.setItem(CLAVE_TOKEN, token),
+  borrar: () => sessionStorage.removeItem(CLAVE_TOKEN),
 };
 
 async function peticion(ruta, { metodo = 'GET', datos } = {}) {
@@ -54,6 +62,11 @@ export const api = {
   actualizarExpediente: (id, datos) => peticion(`/expedientes/${id}`, { metodo: 'PUT', datos }),
   eliminarExpediente: (id) => peticion(`/expedientes/${id}`, { metodo: 'DELETE' }),
 
+  avisoRespaldo: () => peticion('/respaldos/aviso'),
+  estadoRespaldos: () => peticion('/respaldos/estado'),
+  copiarRespaldo: (unidad) => peticion('/respaldos/copiar', { metodo: 'POST', datos: { unidad } }),
+
+  direccionRed: () => peticion('/usuarios/direccion-red'),
   usuarios: () => peticion('/usuarios'),
   crearUsuario: (datos) => peticion('/usuarios', { metodo: 'POST', datos }),
   actualizarUsuario: (id, datos) => peticion(`/usuarios/${id}`, { metodo: 'PUT', datos }),
@@ -85,6 +98,17 @@ export const SECRETARIAS = [
   'Auditoría',
   'Acción Social',
 ];
+
+// Dos primeras iniciales de un nombre, para los avatares.
+export function iniciales(nombre = '') {
+  return nombre
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0])
+    .join('')
+    .toUpperCase();
+}
 
 // Años cumplidos a partir de una fecha AAAA-MM-DD; '' si no hay fecha.
 export function edad(fechaNacimiento) {

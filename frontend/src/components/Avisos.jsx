@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react';
+import Icono from './Icono.jsx';
 
 // Avisos breves en la esquina ("Expediente guardado", errores, etc.)
 const AvisosContext = createContext(() => {});
@@ -18,6 +19,7 @@ export function AvisosProvider({ children }) {
       <div className="avisos" role="status" aria-live="polite">
         {avisos.map((a) => (
           <div key={a.id} className={`aviso aviso-${a.tipo}`}>
+            <Icono nombre={a.tipo === 'error' ? 'alerta' : 'check'} tamano={16} />
             {a.texto}
           </div>
         ))}

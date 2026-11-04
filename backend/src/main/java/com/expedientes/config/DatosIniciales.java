@@ -36,9 +36,27 @@ public class DatosIniciales implements CommandLineRunner {
         convertirFormatoAnterior();
         jdbc.execute("CREATE INDEX IF NOT EXISTS idx_expedientes_status ON expedientes(status)");
 
+        agregarColumnaCambioPassword();
         if (usuarios.contar() == 0) {
-            usuarios.crear(adminUsuario, "Administrador", encoder.encode(adminPassword), "ADMIN");
+            usuarios.crear(adminUsuario, adminUsuario, encoder.encode(adminPassword), "ADMIN");
             log.warn("Se creó el usuario '{}' con la contraseña inicial. Cámbiala al entrar.", adminUsuario);
+        }
+        exigirCambioDePasswordInicial();
+    }
+
+    /** Quien siga con la contraseña inicial, que viene en todas las copias del programa, debe cambiarla al entrar. */
+    private void exigirCambioDePasswordInicial() {
+        usuarios.listar().stream()
+                .filter(u -> encoder.matches(adminPassword, u.passwordHash()))
+                .forEach(u -> usuarios.exigirCambioPassword(u.id()));
+    }
+
+    /** Bases creadas antes de existir esta columna. Va antes de cualquier consulta de usuarios. */
+    private void agregarColumnaCambioPassword() {
+        Integer columna = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM pragma_table_info('usuarios') WHERE name = 'debe_cambiar_password'", Integer.class);
+        if (columna == null || columna == 0) {
+            jdbc.execute("ALTER TABLE usuarios ADD COLUMN debe_cambiar_password INTEGER NOT NULL DEFAULT 0");
         }
     }
 

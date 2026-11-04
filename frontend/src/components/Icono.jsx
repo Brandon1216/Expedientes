@@ -38,6 +38,20 @@ const trazos = {
       <path d="M7 14h10v6H7z" />
     </>
   ),
+  usb: (
+    <>
+      <path d="M9 3h6v5H9z" />
+      <path d="M7 8h10v8a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4z" />
+      <path d="M11 5.2v.1M13 5.2v.1" />
+    </>
+  ),
+  check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
+  alerta: (
+    <>
+      <path d="M12 4 2.8 19.5h18.4z" />
+      <path d="M12 10v4.5M12 17.2v.1" />
+    </>
+  ),
   camara: (
     <>
       <path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />

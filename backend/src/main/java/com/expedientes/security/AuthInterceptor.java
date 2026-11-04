@@ -42,7 +42,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .filter(Usuario::activo)
                 .orElseThrow(() -> ApiException.noAutorizado("Tu cuenta no está activa."));
 
-        if (request.getRequestURI().startsWith("/api/usuarios") && !usuario.esAdmin()) {
+        // Con la contraseña inicial solo se puede consultar la sesión y cambiarla
+        String ruta = request.getRequestURI();
+        if (usuario.debeCambiarPassword() && !ruta.equals("/api/auth/yo") && !ruta.equals("/api/auth/password")) {
+            throw ApiException.prohibido("Debes cambiar tu contraseña antes de continuar.");
+        }
+
+        if (ruta.startsWith("/api/usuarios") && !usuario.esAdmin()) {
             throw ApiException.prohibido("Solo un administrador puede hacer esto.");
         }
 

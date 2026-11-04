@@ -8,7 +8,8 @@ public record Usuario(
         String passwordHash,
         String rol,
         boolean activo,
-        String creadoEn
+        String creadoEn,
+        boolean debeCambiarPassword
 ) {
     public boolean esAdmin() {
         return "ADMIN".equals(rol);

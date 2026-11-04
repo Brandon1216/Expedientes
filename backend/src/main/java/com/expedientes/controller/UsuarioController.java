@@ -1,11 +1,13 @@
 package com.expedientes.controller;
 
 import com.expedientes.config.ApiException;
+import com.expedientes.config.Escritorio;
 import com.expedientes.dto.Dtos.UsuarioDto;
 import com.expedientes.dto.Dtos.UsuarioRequest;
 import com.expedientes.model.Usuario;
 import com.expedientes.repository.UsuarioRepository;
 import com.expedientes.security.AuthInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /** Administración de usuarios. El AuthInterceptor ya garantiza que quien llama es ADMIN. */
 @RestController
@@ -29,9 +32,19 @@ public class UsuarioController {
     private final UsuarioRepository usuarios;
     private final BCryptPasswordEncoder encoder;
 
-    public UsuarioController(UsuarioRepository usuarios, BCryptPasswordEncoder encoder) {
+    private final int puerto;
+
+    public UsuarioController(UsuarioRepository usuarios, BCryptPasswordEncoder encoder,
+                             @Value("${server.port}") int puerto) {
         this.usuarios = usuarios;
         this.encoder = encoder;
+        this.puerto = puerto;
+    }
+
+    /** Dirección que el administrador comparte con los demás equipos de la oficina. */
+    @GetMapping("/direccion-red")
+    public Map<String, String> direccionRed() {
+        return Map.of("direccion", Escritorio.direccionRed(puerto));
     }
 
     @GetMapping

@@ -72,19 +72,6 @@ export default function Impresion({ datos, foto }) {
         <div className={`hi-notas ${datos.notas ? '' : 'hi-notas-vacias'}`}>{datos.notas}</div>
       </section>
 
-      <section className="hi-firmas">
-        <div>
-          <span className="hi-linea" />
-          <strong>{datos.nombre || 'Nombre y firma'}</strong>
-          <small>Solicitante</small>
-        </div>
-        <div>
-          <span className="hi-linea" />
-          <strong>Nombre y firma</strong>
-          <small>{datos.secretaria ? `Secretaría de ${datos.secretaria}` : 'Secretaría asignada'}</small>
-        </div>
-      </section>
-
       <footer className="hi-pie">
         <span>S.U.T.S.P.E.M.I.D.B.C. · Expediente {datos.numero}</span>
         <span>Impreso el {fechaLarga(hoy())}</span>

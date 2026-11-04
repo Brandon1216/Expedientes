@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api.js';
+import CampoClave from '../components/CampoClave.jsx';
 import Dialogo from '../components/Dialogo.jsx';
 import { useAvisos } from '../components/Avisos.jsx';
 
@@ -27,19 +28,19 @@ export default function CambiarPassword({ onCerrar }) {
 
   return (
     <Dialogo titulo="Cambiar contraseña" onCerrar={onCerrar}>
-      <form onSubmit={guardar} className="formulario">
+      <form onSubmit={guardar} className="formulario" autoComplete="off">
         <label className="campo">
           <span>Contraseña actual</span>
-          <input type="password" value={actual} onChange={(e) => setActual(e.target.value)} required autoFocus />
+          <CampoClave campo="actual" value={actual} onChange={(e) => setActual(e.target.value)} required autoFocus />
         </label>
         <label className="campo">
           <span>Contraseña nueva</span>
-          <input type="password" value={nueva} onChange={(e) => setNueva(e.target.value)} minLength={6} required />
+          <CampoClave campo="nueva" value={nueva} onChange={(e) => setNueva(e.target.value)} minLength={6} required />
           <small>Mínimo 6 caracteres.</small>
         </label>
         <label className="campo">
           <span>Repite la contraseña nueva</span>
-          <input type="password" value={confirmacion} onChange={(e) => setConfirmacion(e.target.value)} required />
+          <CampoClave campo="repetir" value={confirmacion} onChange={(e) => setConfirmacion(e.target.value)} required />
         </label>
         {error && <p className="error">{error}</p>}
         <div className="acciones">

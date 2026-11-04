@@ -5,8 +5,13 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -23,10 +28,30 @@ public class TokenService {
     private final byte[] secreto;
     private final long segundosValidez;
 
-    public TokenService(@Value("${app.token.secret}") String secreto,
+    public TokenService(@Value("${app.datos}") String carpetaDatos,
                         @Value("${app.token.horas}") long horas) {
-        this.secreto = secreto.getBytes(StandardCharsets.UTF_8);
+        this.secreto = cargarClave(Path.of(carpetaDatos, "clave-sesiones.key"));
         this.segundosValidez = horas * 3600;
+    }
+
+    /**
+     * Cada instalación tiene su propia clave, generada al primer arranque.
+     * Si viniera dentro del programa, quien tuviera el instalador podría falsificar sesiones.
+     */
+    private static byte[] cargarClave(Path archivo) {
+        try {
+            Files.createDirectories(archivo.getParent());
+            if (Files.exists(archivo) && Files.size(archivo) >= 32) {
+                return Files.readAllBytes(archivo);
+            }
+            byte[] aleatorios = new byte[32];
+            new SecureRandom().nextBytes(aleatorios);
+            byte[] clave = ENC.encode(aleatorios);
+            Files.write(archivo, clave);
+            return clave;
+        } catch (IOException e) {
+            throw new UncheckedIOException("No se pudo preparar la clave de sesiones en " + archivo, e);
+        }
     }
 
     public String generar(long idUsuario) {
