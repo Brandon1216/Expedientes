@@ -1,6 +1,5 @@
 package com.expedientes.model;
 
-/** Usuario del sistema. passwordHash nunca se envía al frontend. */
 public record Usuario(
         Long id,
         String usuario,

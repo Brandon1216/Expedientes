@@ -15,10 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * Una copia de la base por día en la carpeta de respaldos (expedientes-AAAA-MM-DD.db).
- * Revisa al arrancar y cada 3 horas, así se respalda aunque la computadora se apague temprano.
- */
 @Component
 public class Respaldos {
 
@@ -52,7 +48,6 @@ public class Respaldos {
         }
     }
 
-    /** VACUUM INTO hace una copia consistente aunque el sistema se esté usando. El destino no debe existir. */
     void copiarBase(Path destino) {
         String ruta = destino.toAbsolutePath().toString().replace('\\', '/').replace("'", "''");
         jdbc.execute("VACUUM INTO '" + ruta + "'");

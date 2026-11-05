@@ -2,7 +2,6 @@ package com.expedientes.config;
 
 import org.springframework.http.HttpStatus;
 
-/** Error controlado que se convierte en una respuesta JSON con su código HTTP. */
 public class ApiException extends RuntimeException {
 
     private final HttpStatus status;

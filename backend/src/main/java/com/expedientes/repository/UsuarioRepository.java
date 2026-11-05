@@ -70,7 +70,6 @@ public class UsuarioRepository {
     }
 
     public void eliminar(long id) {
-        // Los expedientes que creó se conservan, solo pierden la referencia al autor
         jdbc.update("UPDATE expedientes SET creado_por = NULL WHERE creado_por = ?", id);
         jdbc.update("DELETE FROM usuarios WHERE id = ?", id);
     }

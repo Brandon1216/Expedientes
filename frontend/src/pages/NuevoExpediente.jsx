@@ -5,7 +5,6 @@ import { useAvisos } from '../components/Avisos.jsx';
 import Impresion from '../components/Impresion.jsx';
 import CamposExpediente, { valoresExpediente } from '../components/CamposExpediente.jsx';
 
-// Página de registro. `borrador` vive en App: lo escrito se conserva al cambiar de sección.
 export default function NuevoExpediente({ borrador, onBorrador, onTerminar }) {
   const avisar = useAvisos();
   const [form, setForm] = useState(() => borrador || valoresExpediente());

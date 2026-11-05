@@ -1,6 +1,3 @@
-// Los navegadores ignoran autocomplete="off" en type="password" y ofrecen guardar y rellenar la contraseña.
-// Por eso el campo es de texto, tapado con puntos por CSS. Si el navegador no sabe taparlo,
-// se usa type="password": mejor que ofrezca guardarla a que se vea en pantalla.
 const SE_PUEDE_TAPAR = typeof CSS !== 'undefined' && CSS.supports('-webkit-text-security', 'disc');
 
 const bloquear = (e) => e.preventDefault();

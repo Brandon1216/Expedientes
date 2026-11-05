@@ -3,7 +3,6 @@ import { api } from '../api.js';
 import CampoClave from '../components/CampoClave.jsx';
 import { MarcaLogin } from './Login.jsx';
 
-// Pantalla que no se puede saltar: quien entra con la contraseña inicial debe poner una propia.
 export default function PasswordObligatoria({ onListo, onSalir }) {
   const [actual, setActual] = useState('');
   const [nueva, setNueva] = useState('');

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Copia de respaldos a USB. Solo para administradores. */
 @RestController
 @RequestMapping("/api/respaldos")
 public class RespaldoController {
@@ -28,7 +27,6 @@ public class RespaldoController {
         this.copiaUsb = copiaUsb;
     }
 
-    /** Consulta rápida para el aviso del menú: no busca USB. */
     @GetMapping("/aviso")
     public AvisoRespaldo aviso(@RequestAttribute(AuthInterceptor.ATRIBUTO_USUARIO) Usuario yo) {
         soloAdmin(yo);

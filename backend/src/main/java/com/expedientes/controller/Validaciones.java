@@ -6,11 +6,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Set;
 
-/** Reglas de validación compartidas por los controladores. */
 final class Validaciones {
 
     static final Set<String> STATUS = Set.of("ACTIVO", "INACTIVO");
-    // Debe coincidir con SECRETARIAS de frontend/src/api.js
     static final Set<String> SECRETARIAS = Set.of(
             "Organización", "Finanzas", "Asuntos Legales", "Transparencia", "Fomento al Deporte",
             "Fomento al Ahorro", "Pensiones y Jubilaciones", "Oficialía Mayor", "Actas y Acuerdos",
@@ -21,7 +19,6 @@ final class Validaciones {
     private Validaciones() {
     }
 
-    /** Devuelve el texto sin espacios sobrantes o lanza error si viene vacío. */
     static String requerido(String valor, String campo, int maximo) {
         String limpio = valor == null ? "" : valor.trim();
         if (limpio.isEmpty()) {
@@ -44,7 +41,6 @@ final class Validaciones {
         return limpio;
     }
 
-    /** null = sin cambios, "" = quitar, o una imagen como data URL de máximo ~3 MB. */
     static String fotografia(String valor) {
         if (valor == null || valor.isEmpty()) {
             return valor;
@@ -85,7 +81,6 @@ final class Validaciones {
         }
     }
 
-    /** Vacía o una de la lista de SECRETARIAS. */
     static String secretaria(String valor) {
         if (valor == null || valor.isBlank()) {
             return null;
@@ -97,7 +92,6 @@ final class Validaciones {
         return s;
     }
 
-    /** Fecha que puede quedar vacía; no admite fechas futuras (fecha de nacimiento). */
     static String fechaOpcional(String valor) {
         if (valor == null || valor.isBlank()) {
             return null;

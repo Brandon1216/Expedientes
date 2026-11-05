@@ -3,7 +3,6 @@ import { api, iniciales } from '../api.js';
 import Icono from './Icono.jsx';
 import CambiarPassword from '../pages/CambiarPassword.jsx';
 
-// Estructura general: barra lateral + contenido.
 export default function Marco({ usuario, vista, onVista, onSalir, children }) {
   const [cambiandoPassword, setCambiandoPassword] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);

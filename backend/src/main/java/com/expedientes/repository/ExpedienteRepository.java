@@ -18,7 +18,6 @@ import java.util.Optional;
 @Repository
 public class ExpedienteRepository {
 
-    // %s es la columna de la fotografía: el listado no la trae para no enviar todas las imágenes
     private static final String SELECT = """
             SELECT e.id, e.numero, e.status, e.fecha_ingreso, e.nombre, e.fecha_nacimiento, e.solicitud,
                    e.secretaria, e.perfil, e.telefono, e.familiar_sindicalizado, e.parentesco,
@@ -62,8 +61,9 @@ public class ExpedienteRepository {
         this.jdbc = jdbc;
     }
 
-    /** Busca por número, nombre, solicitud, secretaría o teléfono y opcionalmente filtra por status. */
-    public List<Expediente> buscar(String texto, String status) {
+    public static final String SIN_SECRETARIA = "sin-asignar";
+
+    public List<Expediente> buscar(String texto, String status, String secretaria) {
         StringBuilder sql = new StringBuilder(SELECT_LISTA).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
 
@@ -79,6 +79,12 @@ public class ExpedienteRepository {
             sql.append(" AND e.status = ?");
             params.add(status);
         }
+        if (SIN_SECRETARIA.equals(secretaria)) {
+            sql.append(" AND e.secretaria IS NULL");
+        } else if (secretaria != null && !secretaria.isBlank()) {
+            sql.append(" AND e.secretaria = ?");
+            params.add(secretaria);
+        }
         sql.append(" ORDER BY e.id DESC");
         return jdbc.query(sql.toString(), MAPPER, params.toArray());
     }
@@ -87,16 +93,13 @@ public class ExpedienteRepository {
         return jdbc.query(SELECT_COMPLETO + " WHERE e.id = ?", MAPPER, id).stream().findFirst();
     }
 
-    /** true si otro expediente (distinto de idPropio) ya usa ese número. */
     public boolean numeroOcupado(String numero, long idPropio) {
         Integer n = jdbc.queryForObject("SELECT COUNT(*) FROM expedientes WHERE numero = ? AND id <> ?",
                 Integer.class, numero, idPropio);
         return n != null && n > 0;
     }
 
-    /** Recibe los datos ya validados. */
     public long crear(ExpedienteRequest d, long creadoPor) {
-        // Todo ocurre en la misma conexión para que last_insert_rowid() sea el de este INSERT
         Long id = jdbc.execute((ConnectionCallback<Long>) con -> {
             try (PreparedStatement ps = con.prepareStatement("""
                     INSERT INTO expedientes (numero, status, fecha_ingreso, nombre, fecha_nacimiento, solicitud,
@@ -129,7 +132,6 @@ public class ExpedienteRepository {
         return id == null ? 0 : id;
     }
 
-    /** Recibe los datos ya validados. fotografia: null la deja como está, "" la quita. */
     public void actualizar(long id, ExpedienteRequest d) {
         jdbc.update("""
                         UPDATE expedientes

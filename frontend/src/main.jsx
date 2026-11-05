@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
-// Tipografía incluida en el programa: funciona sin internet
 import '@fontsource/schibsted-grotesk/latin-400.css';
 import '@fontsource/schibsted-grotesk/latin-400-italic.css';
 import '@fontsource/schibsted-grotesk/latin-500.css';

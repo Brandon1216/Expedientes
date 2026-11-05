@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { api, STATUS, formatoFecha, iniciales } from '../api.js';
+import { api, SECRETARIAS, STATUS, formatoFecha, iniciales } from '../api.js';
 import Icono from '../components/Icono.jsx';
 import { useAvisos } from '../components/Avisos.jsx';
 import Carpeta from '../components/Carpeta.jsx';
@@ -16,12 +16,13 @@ export default function Expedientes({ usuario, onNuevo }) {
   const [resumen, setResumen] = useState(null);
   const [texto, setTexto] = useState('');
   const [status, setStatus] = useState('');
+  const [secretaria, setSecretaria] = useState('');
   const [cargando, setCargando] = useState(true);
-  const [abierto, setAbierto] = useState(null); // expediente en la carpeta
+  const [abierto, setAbierto] = useState(null);
 
   const cargar = useCallback(async () => {
     try {
-      const [datos, res] = await Promise.all([api.expedientes(texto, status), api.resumen()]);
+      const [datos, res] = await Promise.all([api.expedientes(texto, status, secretaria), api.resumen()]);
       setLista(datos);
       setResumen(res);
     } catch (err) {
@@ -29,9 +30,8 @@ export default function Expedientes({ usuario, onNuevo }) {
     } finally {
       setCargando(false);
     }
-  }, [texto, status, avisar]);
+  }, [texto, status, secretaria, avisar]);
 
-  // Espera un momento después de teclear antes de buscar
   useEffect(() => {
     const t = setTimeout(cargar, texto ? 250 : 0);
     return () => clearTimeout(t);
@@ -57,19 +57,34 @@ export default function Expedientes({ usuario, onNuevo }) {
 
       <div className="tabla-marco">
         <div className="barra">
-          <div className="filtros" role="tablist" aria-label="Filtrar por status">
-            {FILTROS.map((f) => (
-              <button
-                key={f.valor}
-                role="tab"
-                aria-selected={status === f.valor}
-                className={status === f.valor ? 'activo' : ''}
-                onClick={() => setStatus(f.valor)}
-              >
-                {f.etiqueta}
-                <span className="cuenta">{resumen ? resumen[f.clave] : '–'}</span>
-              </button>
-            ))}
+          <div className="barra-filtros">
+            <div className="filtros" role="tablist" aria-label="Filtrar por status">
+              {FILTROS.map((f) => (
+                <button
+                  key={f.valor}
+                  role="tab"
+                  aria-selected={status === f.valor}
+                  className={status === f.valor ? 'activo' : ''}
+                  onClick={() => setStatus(f.valor)}
+                >
+                  {f.etiqueta}
+                  <span className="cuenta">{resumen ? resumen[f.clave] : '–'}</span>
+                </button>
+              ))}
+            </div>
+
+            <label className={`filtro-secretaria ${secretaria ? 'activo' : ''}`}>
+              <span className="solo-lector">Filtrar por secretaría</span>
+              <select value={secretaria} onChange={(e) => setSecretaria(e.target.value)}>
+                <option value="">Todas las secretarías</option>
+                <option value="sin-asignar">Sin asignar</option>
+                {SECRETARIAS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           <label className="buscador">
@@ -93,12 +108,22 @@ export default function Expedientes({ usuario, onNuevo }) {
         ) : lista.length === 0 ? (
           <div className="vacio">
             <span className="vacio-icono">
-              <Icono nombre={texto || status ? 'buscar' : 'carpeta'} tamano={22} />
+              <Icono nombre={texto || status || secretaria ? 'buscar' : 'carpeta'} tamano={22} />
             </span>
-            {texto || status ? (
+            {texto || status || secretaria ? (
               <>
                 <strong>Sin resultados</strong>
-                <p>Prueba con otro término o quita el filtro de status.</p>
+                <p>Prueba con otro término o cambia los filtros.</p>
+                <button
+                  className="boton boton-suave"
+                  onClick={() => {
+                    setTexto('');
+                    setStatus('');
+                    setSecretaria('');
+                  }}
+                >
+                  Quitar filtros
+                </button>
               </>
             ) : (
               <>

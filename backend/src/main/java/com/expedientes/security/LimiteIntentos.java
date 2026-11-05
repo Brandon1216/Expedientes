@@ -10,11 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Frena a quien prueba contraseñas: 5 fallos seguidos con una cuenta desde un equipo,
- * o 20 en total desde un equipo, bloquean 15 minutos. Se cuenta por equipo para que
- * nadie en la red pueda dejar fuera al administrador fallando a propósito con su usuario.
- */
 @Component
 public class LimiteIntentos {
 
@@ -54,7 +49,6 @@ public class LimiteIntentos {
         fallos.merge(clave, new Fallos(1, Instant.now()), (a, b) -> new Fallos(a.cuenta() + 1, b.ultimo()));
     }
 
-    /** El total del equipo no se reinicia: con una cuenta propia se podría seguir probando las de otros. */
     public void registrarExito(String equipo, String usuario) {
         fallos.remove(claveCuenta(equipo, usuario));
     }

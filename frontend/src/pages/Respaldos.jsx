@@ -3,7 +3,7 @@ import { api, formatoFecha } from '../api.js';
 import Icono from '../components/Icono.jsx';
 import { useAvisos } from '../components/Avisos.jsx';
 
-const ESPERA_REVISION = 4000; // cada cuánto se revisa si conectaron una USB
+const ESPERA_REVISION = 4000;
 
 const enPrincipal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
@@ -31,7 +31,6 @@ export default function Respaldos() {
     }
   }, []);
 
-  // Sigue revisando mientras la página esté abierta, para activar el botón al conectar la USB
   useEffect(() => {
     let activo = true;
     let espera;

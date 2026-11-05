@@ -15,10 +15,6 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 
-/**
- * Tokens de sesión firmados con HMAC-SHA256 (mismo principio que un JWT).
- * Formato: base64url(idUsuario|expiracion) + "." + base64url(firma)
- */
 @Component
 public class TokenService {
 
@@ -34,10 +30,6 @@ public class TokenService {
         this.segundosValidez = horas * 3600;
     }
 
-    /**
-     * Cada instalación tiene su propia clave, generada al primer arranque.
-     * Si viniera dentro del programa, quien tuviera el instalador podría falsificar sesiones.
-     */
     private static byte[] cargarClave(Path archivo) {
         try {
             Files.createDirectories(archivo.getParent());
@@ -60,7 +52,6 @@ public class TokenService {
         return datos + "." + firmar(datos);
     }
 
-    /** Devuelve el id del usuario si el token es válido y no ha expirado; si no, null. */
     public Long validar(String token) {
         if (token == null) {
             return null;

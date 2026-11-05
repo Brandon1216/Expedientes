@@ -8,10 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * Revisa el token en cada petición a /api/** (excepto el login).
- * Las rutas /api/usuarios/** quedan reservadas para administradores.
- */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -28,7 +24,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            return true; // preflight de CORS
+            return true;
         }
 
         String cabecera = request.getHeader("Authorization");
@@ -42,7 +38,6 @@ public class AuthInterceptor implements HandlerInterceptor {
                 .filter(Usuario::activo)
                 .orElseThrow(() -> ApiException.noAutorizado("Tu cuenta no está activa."));
 
-        // Con la contraseña inicial solo se puede consultar la sesión y cambiarla
         String ruta = request.getRequestURI();
         if (usuario.debeCambiarPassword() && !ruta.equals("/api/auth/yo") && !ruta.equals("/api/auth/password")) {
             throw ApiException.prohibido("Debes cambiar tu contraseña antes de continuar.");

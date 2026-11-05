@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import Icono from './Icono.jsx';
 
-// Ventana centrada para formularios cortos y confirmaciones.
 export default function Dialogo({ titulo, onCerrar, children, ancho = 420 }) {
   useEffect(() => {
     const tecla = (e) => e.key === 'Escape' && onCerrar();

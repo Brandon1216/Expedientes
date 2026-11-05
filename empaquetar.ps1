@@ -1,12 +1,4 @@
-﻿# Arma el programa de escritorio en dist\:
-#   dist\Expedientes\Expedientes.exe   el programa (trae Java incluido, no hay que instalar nada más)
-#   dist\Instalar.bat                  abre la ventana que lo copia a C:\Expedientes\programa y crea los accesos directos
-#   dist\Expedientes-instalador.zip    todo lo anterior en un solo archivo, para llevarlo a otra computadora
-#
-# Uso (desde la carpeta del proyecto):  powershell -ExecutionPolicy Bypass -File empaquetar.ps1
-# Necesita en ESTA computadora: Node.js, Maven y Java 17+ (JDK, que trae jpackage).
-
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $raiz = $PSScriptRoot
 $dist = Join-Path $raiz 'dist'
 $temporal = Join-Path $dist 'temporal'
@@ -22,7 +14,7 @@ Pop-Location
 
 Paso 'Compilando el servidor (backend)'
 Push-Location (Join-Path $raiz 'backend')
-mvn -q -DskipTests clean package; Revisar 'mvn package' # clean: sin archivos de compilaciones anteriores dentro del .jar
+mvn -q -DskipTests clean package; Revisar 'mvn package'
 Pop-Location
 
 Paso 'Preparando archivos'
@@ -32,7 +24,6 @@ $jar = Get-ChildItem (Join-Path $raiz 'backend\target') -Filter 'expedientes-bac
     Where-Object { $_.Name -notlike '*.original' } | Select-Object -First 1
 Copy-Item $jar.FullName (Join-Path $entrada 'expedientes.jar')
 
-# Ícono .ico a partir del logo (PNG de 256 px dentro de un .ico)
 Add-Type -AssemblyName System.Drawing
 $logo = [System.Drawing.Image]::FromFile((Join-Path $raiz 'frontend\public\logo.png'))
 $lienzo = New-Object System.Drawing.Bitmap 256, 256
@@ -47,8 +38,8 @@ $g.Dispose(); $lienzo.Dispose(); $logo.Dispose()
 $bytesPng = $png.ToArray()
 $ico = New-Object System.IO.MemoryStream
 $w = New-Object System.IO.BinaryWriter $ico
-$w.Write([uint16]0); $w.Write([uint16]1); $w.Write([uint16]1)           # encabezado: 1 imagen
-$w.Write([byte]0); $w.Write([byte]0); $w.Write([byte]0); $w.Write([byte]0) # 256x256, sin paleta
+$w.Write([uint16]0); $w.Write([uint16]1); $w.Write([uint16]1)
+$w.Write([byte]0); $w.Write([byte]0); $w.Write([byte]0); $w.Write([byte]0)
 $w.Write([uint16]1); $w.Write([uint16]32)
 $w.Write([uint32]$bytesPng.Length); $w.Write([uint32]22)
 $w.Write($bytesPng); $w.Flush()
@@ -70,7 +61,7 @@ jpackage --type app-image `
 Revisar 'jpackage'
 
 Copy-Item (Join-Path $raiz 'instalador\*') $dist
-Copy-Item (Join-Path $raiz 'frontend\public\logo.png') $dist # lo muestra la ventana de instalación
+Copy-Item (Join-Path $raiz 'frontend\public\logo.png') $dist
 Remove-Item $temporal -Recurse -Force
 
 Paso 'Comprimiendo para llevarlo a otra computadora'

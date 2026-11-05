@@ -13,11 +13,6 @@ import java.util.Arrays;
 @EnableScheduling
 public class ExpedientesApplication {
 
-    /**
-     * Con --escritorio (lo pasa Expedientes.exe): si el programa ya está abierto solo abre el navegador;
-     * si otro programa ocupa el puerto, lo avisa; si no, arranca el servidor, abre el navegador
-     * y pone un ícono junto al reloj.
-     */
     public static void main(String[] args) {
         boolean escritorio = Arrays.asList(args).contains("--escritorio");
         if (escritorio && Escritorio.puertoOcupado()) {
@@ -31,8 +26,7 @@ public class ExpedientesApplication {
         }
 
         SpringApplication app = new SpringApplication(ExpedientesApplication.class);
-        app.setHeadless(!escritorio); // el ícono junto al reloj necesita la parte gráfica de Java
-        // Antes de conectar a la base: crea la carpeta de datos y trae la base vieja si hace falta
+        app.setHeadless(!escritorio);
         app.addListeners((ApplicationEnvironmentPreparedEvent e) ->
                 Escritorio.prepararCarpetaDatos(e.getEnvironment().getProperty("app.datos")));
         ConfigurableApplicationContext contexto = app.run(args);

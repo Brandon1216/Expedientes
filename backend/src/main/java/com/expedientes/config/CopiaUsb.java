@@ -31,10 +31,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Copia un respaldo a una USB conectada a la computadora donde corre el programa.
- * Solo escribe en unidades detectadas como USB: nunca en una ruta recibida del navegador.
- */
 @Component
 public class CopiaUsb {
 
@@ -42,7 +38,6 @@ public class CopiaUsb {
     private static final String CARPETA_EN_USB = "Respaldos Expedientes";
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
 
-    // Unidades extraíbles, más discos cuyo bus es USB (Windows registra algunas USB como disco fijo)
     private static final String DETECTAR = """
             [Console]::OutputEncoding=[Text.Encoding]::UTF8;
             $letras=@();
@@ -61,7 +56,6 @@ public class CopiaUsb {
     public CopiaUsb(Respaldos respaldos, JdbcTemplate jdbc, ObjectMapper json,
                     @Value("${app.respaldos.carpeta}") String carpetaRespaldos,
                     @Value("${app.datos}") String carpetaDatos,
-                    // Solo para pruebas automáticas: carpetas que se tratan como si fueran USB
                     @Value("${app.respaldos.usb-prueba:}") String usbPrueba) {
         this.respaldos = respaldos;
         this.jdbc = jdbc;
@@ -110,9 +104,8 @@ public class CopiaUsb {
             for (JsonNode n : json.readTree(salida)) {
                 String id = n.path("DeviceID").asText();
                 if (id.equalsIgnoreCase(unidadDatos)) {
-                    continue; // copiar al mismo disco no protege nada
+                    continue;
                 }
-                // Sin sistema de archivos: cifrada y sin desbloquear, o lector sin tarjeta
                 boolean legible = !n.path("FileSystem").asText("").isBlank();
                 unidades.add(new UnidadUsb(id, n.path("VolumeName").asText(""), legible, n.path("FreeSpace").asLong(0)));
             }
@@ -130,7 +123,6 @@ public class CopiaUsb {
         }
     }
 
-    /** Hace una copia de la base en este momento, la pasa a la USB y comprueba que quedó idéntica. */
     public CopiaHecha copiar(String idUnidad, String usuario) {
         UnidadUsb unidad = unidades().stream().filter(u -> u.id().equals(idUnidad)).findFirst()
                 .orElseThrow(() -> ApiException.invalido("Esa USB ya no está conectada a la computadora principal."));
@@ -159,7 +151,7 @@ public class CopiaUsb {
             Files.createDirectories(carpeta);
             Files.copy(temporal, parcial, StandardCopyOption.REPLACE_EXISTING);
             try (FileChannel canal = FileChannel.open(parcial, StandardOpenOption.WRITE)) {
-                canal.force(true); // que llegue a la USB antes de comprobarla
+                canal.force(true);
             }
             if (!huella(temporal).equals(huella(parcial))) {
                 throw ApiException.invalido("La copia en la USB no quedó igual al original. Prueba con otra USB.");
@@ -212,7 +204,6 @@ public class CopiaUsb {
                         rs.getLong("bytes"), rs.getString("usuario")));
     }
 
-    /** Días desde la última copia, o null si nunca se ha hecho. */
     public Integer diasDesdeUltima() {
         return jdbc.queryForObject("""
                 SELECT CAST(julianday('now', 'localtime') - julianday(MAX(fecha)) AS INTEGER) FROM copias_usb""",

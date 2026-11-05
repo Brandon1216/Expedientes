@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { SECRETARIAS, STATUS, edad, hoy, reducirImagen } from '../api.js';
 import Icono from './Icono.jsx';
 
-// Valores del formulario a partir de un expediente, o vacíos para uno nuevo.
 export function valoresExpediente(expediente = {}) {
   return {
     numero: expediente.numero || '',
@@ -21,13 +20,11 @@ export function valoresExpediente(expediente = {}) {
   };
 }
 
-// Secciones del expediente: las usan la carpeta (editar) y la página de registro (nuevo).
 export default function CamposExpediente({ form, setForm, foto, setFoto, setError, enfocar }) {
   const entradaFoto = useRef(null);
 
   const cambiar = (campo) => (e) => setForm((f) => ({ ...f, [campo]: e.target.value }));
 
-  // form.fotografia solo se envía si cambió: data URL nueva, o '' para quitarla
   const elegirFoto = async (e) => {
     const archivo = e.target.files[0];
     e.target.value = '';
@@ -160,7 +157,6 @@ export default function CamposExpediente({ form, setForm, foto, setFoto, setErro
                   {s}
                 </option>
               ))}
-              {/* Conserva un valor anterior que ya no esté en la lista */}
               {form.secretaria && !SECRETARIAS.includes(form.secretaria) && (
                 <option value={form.secretaria}>{form.secretaria}</option>
               )}

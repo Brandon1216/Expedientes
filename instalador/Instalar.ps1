@@ -1,10 +1,4 @@
-﻿# Ventana de instalación de Expedientes: copia el programa a C:\Expedientes\programa y crea los accesos directos.
-# Los datos (C:\Expedientes\datos) y los respaldos (C:\Expedientes\respaldos) no se tocan:
-# sirve también para actualizar a una versión nueva.
-#
-# -Destino sirve para probar el instalador en otra carpeta sin tocar la instalación real.
-
-param([string]$Destino = 'C:\Expedientes\programa')
+﻿param([string]$Destino = 'C:\Expedientes\programa')
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms, System.Drawing
@@ -23,10 +17,6 @@ if (-not (Test-Path $exeOrigen)) {
     throw 'No encuentro la carpeta Expedientes junto a este archivo. Descomprime todo el .zip antes de instalar.'
 }
 
-# ---------- Lo que hace la instalación ----------
-
-# Solo la copia que se va a reemplazar y la del paquete: si la del paquete sigue abierta
-# ocupa el puerto y el programa nuevo solo abriría el navegador hacia la versión vieja.
 function Programas-Abiertos {
     @(Get-Process Expedientes -ErrorAction SilentlyContinue | Where-Object {
         $_.Path -and ($_.Path -ieq $exe -or $_.Path -ieq $exeOrigen)
@@ -60,10 +50,10 @@ function Instalar {
 
         Avance 'Copiando el programa...'
         New-Item -ItemType Directory -Force $Destino | Out-Null
-        # Sin /R y /W, robocopy reintenta por días si un archivo está en uso
+
         $copia = Start-Process robocopy -WindowStyle Hidden -PassThru -ArgumentList `
             "`"$origen`" `"$Destino`" /MIR /R:3 /W:2 /NFL /NDL /NJH /NJS /NP"
-        $null = $copia.Handle # sin esto, ExitCode queda vacío al terminar
+        $null = $copia.Handle
         while (-not $copia.HasExited) {
             Avance 'Copiando el programa...'
             Start-Sleep -Milliseconds 40
@@ -88,9 +78,6 @@ function Instalar {
     }
 }
 
-# ---------- Ventana ----------
-
-# Sin esto Windows la dibuja borrosa en pantallas con escala mayor a 100 %
 Add-Type -Namespace Instalador -Name Pantalla -MemberDefinition @'
 [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
 [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr ventana, int modo);
@@ -99,8 +86,6 @@ Add-Type -Namespace Instalador -Name Pantalla -MemberDefinition @'
 [Instalador.Pantalla]::SetProcessDPIAware() | Out-Null
 [Windows.Forms.Application]::EnableVisualStyles()
 
-# Instalar.bat abre PowerShell oculto y Windows aplica ese "oculto" al primer ShowWindow del proceso:
-# se gasta aquí, en la consola, para que no esconda la ventana del instalador.
 [Instalador.Pantalla]::ShowWindow([Instalador.Pantalla]::GetConsoleWindow(), 0) | Out-Null
 
 $grafico = [Drawing.Graphics]::FromHwnd([IntPtr]::Zero)
@@ -108,7 +93,6 @@ $escala = $grafico.DpiX / 96
 $grafico.Dispose()
 function U($n) { [int]($n * $escala) }
 
-# Los mismos colores de styles.css
 function Color($html) { [Drawing.ColorTranslator]::FromHtml($html) }
 $guinda = Color '#7d1a27'
 $guindaOscuro = Color '#3d0c14'
@@ -192,7 +176,6 @@ function Mostrar($paso) {
     $ventana.Refresh()
 }
 
-# La barra va y viene mientras se trabaja: robocopy no informa cuánto falta
 $script:posicion = 0
 function Avance($estado) {
     if ($trabajoEstado.Text -ne $estado) { $trabajoEstado.Text = $estado }
@@ -214,7 +197,6 @@ $script:trabajando = $false
 $ventana.add_FormClosing({ if ($script:trabajando) { $_.Cancel = $true } })
 $ventana.add_Shown({ $ventana.Activate() })
 
-# Panel de la marca, como en la pantalla de inicio de sesión
 $marca = New-Object Windows.Forms.Panel
 $marca.Location = New-Object Drawing.Point 0, 0
 $marca.Size = New-Object Drawing.Size (U 240), (U 440)
@@ -244,7 +226,6 @@ if ($version) {
     Texto $marca "Versión $version" 10 400 220 20 (Fuente 8.5) (Color '#c9b8ba') 'MiddleCenter' | Out-Null
 }
 
-# Paso 1: confirmar
 $actualizando = Test-Path $exe
 $pasoInicio = Paso
 Texto $pasoInicio $(if ($actualizando) { 'Actualizar Expedientes' } else { 'Instalar Expedientes' }) 36 30 370 40 (Fuente 18 'Bold') $tinta | Out-Null
@@ -262,14 +243,13 @@ if ((Programas-Abiertos).Count -gt 0) {
 $botonInstalar = Boton $pasoInicio $(if ($actualizando) { 'Actualizar' } else { 'Instalar' }) 406 120 $true
 $botonCancelar = Boton $pasoInicio 'Cancelar' 276 100 $false
 $botonCancelar.add_Click({ $ventana.Close() })
-# Con un temporizador el clic termina primero y la ventana alcanza a mostrar el paso siguiente
+
 $arranque = New-Object Windows.Forms.Timer
 $arranque.Interval = 50
 $arranque.add_Tick({ $arranque.Stop(); Instalar })
 $botonInstalar.add_Click({ $arranque.Start() })
 $ventana.AcceptButton = $botonInstalar
 
-# Paso 2: trabajando
 $pasoTrabajo = Paso
 Texto $pasoTrabajo $(if ($actualizando) { 'Actualizando...' } else { 'Instalando...' }) 36 150 370 40 (Fuente 18 'Bold') $tinta | Out-Null
 $trabajoEstado = Texto $pasoTrabajo 'Preparando...' 36 194 370 24 (Fuente 10) $gris
@@ -283,7 +263,6 @@ $barraTramo.Size = New-Object Drawing.Size (U 110), (U 6)
 $barraTramo.BackColor = $guinda
 $barra.Controls.Add($barraTramo)
 
-# Paso 3: terminado
 $pasoFin = Paso
 Texto $pasoFin $(if ($actualizando) { 'Expedientes quedó actualizado' } else { 'Expedientes quedó instalado' }) 36 30 370 40 (Fuente 18 'Bold') $activo | Out-Null
 $finComo = Texto $pasoFin '' 36 74 370 46 (Fuente 10) $gris
@@ -296,7 +275,6 @@ $botonFin.add_Click({
     $ventana.Close()
 })
 
-# Si algo falla
 $pasoError = Paso
 Texto $pasoError 'No se pudo completar' 36 30 370 40 (Fuente 18 'Bold') $peligro | Out-Null
 $errorTexto = Texto $pasoError '' 36 74 370 200 (Fuente 10) $tinta

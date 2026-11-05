@@ -42,7 +42,6 @@ public class AuthController {
         this.passwordInicial = passwordInicial;
     }
 
-    /** Público: permite saber que quien atiende el puerto es este programa y no otro. */
     @GetMapping("/identidad")
     public Map<String, String> identidad() {
         return Map.of("programa", "expedientes");

@@ -1,10 +1,6 @@
-// Cliente para hablar con el backend de Java.
 const CLAVE_TOKEN = 'expedientes.token';
 
-// La sesión vive solo en esta pestaña: al cerrarla o volver a abrir la app se piden las credenciales.
-// sessionStorage no basta: el navegador puede devolverlo al restaurar una pestaña cerrada,
-// así que solo se conserva cuando la página se recarga (F5).
-localStorage.removeItem(CLAVE_TOKEN); // versiones anteriores la dejaban guardada para siempre
+localStorage.removeItem(CLAVE_TOKEN);
 if (performance.getEntriesByType('navigation')[0]?.type !== 'reload') {
   sessionStorage.removeItem(CLAVE_TOKEN);
 }
@@ -49,10 +45,11 @@ export const api = {
   yo: () => peticion('/auth/yo'),
   cambiarPassword: (actual, nueva) => peticion('/auth/password', { metodo: 'PUT', datos: { actual, nueva } }),
 
-  expedientes: (q = '', status = '') => {
+  expedientes: (q = '', status = '', secretaria = '') => {
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (status) params.set('status', status);
+    if (secretaria) params.set('secretaria', secretaria);
     const qs = params.toString();
     return peticion(`/expedientes${qs ? `?${qs}` : ''}`);
   },
@@ -78,7 +75,6 @@ export const STATUS = {
   INACTIVO: 'Inactivo',
 };
 
-// Debe coincidir con Validaciones.SECRETARIAS del backend
 export const SECRETARIAS = [
   'Organización',
   'Finanzas',
@@ -99,7 +95,6 @@ export const SECRETARIAS = [
   'Acción Social',
 ];
 
-// Dos primeras iniciales de un nombre, para los avatares.
 export function iniciales(nombre = '') {
   return nombre
     .split(/\s+/)
@@ -110,7 +105,6 @@ export function iniciales(nombre = '') {
     .toUpperCase();
 }
 
-// Años cumplidos a partir de una fecha AAAA-MM-DD; '' si no hay fecha.
 export function edad(fechaNacimiento) {
   if (!fechaNacimiento) return '';
   const [a, m, d] = fechaNacimiento.slice(0, 10).split('-').map(Number);
@@ -126,7 +120,6 @@ export function formatoFecha(iso) {
   return new Date(a, m - 1, d).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// Reduce una foto (por ejemplo, de la cámara del celular) a JPEG de máximo `maximo` px por lado.
 export function reducirImagen(archivo, maximo = 1280) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(archivo);
@@ -137,7 +130,7 @@ export function reducirImagen(archivo, maximo = 1280) {
       lienzo.width = Math.round(img.width * escala);
       lienzo.height = Math.round(img.height * escala);
       const ctx = lienzo.getContext('2d');
-      ctx.fillStyle = '#fff'; // fondo blanco para PNG con transparencia
+      ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, lienzo.width, lienzo.height);
       ctx.drawImage(img, 0, 0, lienzo.width, lienzo.height);
       URL.revokeObjectURL(url);

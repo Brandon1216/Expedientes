@@ -5,14 +5,11 @@ import { Confirmar } from './Dialogo.jsx';
 import Impresion from './Impresion.jsx';
 import CamposExpediente, { valoresExpediente } from './CamposExpediente.jsx';
 
-// Panel lateral con forma de carpeta: muestra y edita un expediente existente.
 export default function Carpeta({ expediente, esAdmin, onCerrar, onGuardado }) {
   const [form, setForm] = useState(() => valoresExpediente(expediente));
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
-  // Foto que se muestra: undefined mientras carga, null si no tiene.
-  // El listado no trae las fotos, así que se pide el expediente completo al abrirlo.
   const [foto, setFoto] = useState(undefined);
 
   useEffect(() => {

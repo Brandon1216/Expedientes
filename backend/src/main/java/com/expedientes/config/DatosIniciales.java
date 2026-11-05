@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/** Pone al día la base de datos y crea el administrador inicial la primera vez que arranca el sistema. */
 @Component
 public class DatosIniciales implements CommandLineRunner {
 
@@ -44,14 +43,12 @@ public class DatosIniciales implements CommandLineRunner {
         exigirCambioDePasswordInicial();
     }
 
-    /** Quien siga con la contraseña inicial, que viene en todas las copias del programa, debe cambiarla al entrar. */
     private void exigirCambioDePasswordInicial() {
         usuarios.listar().stream()
                 .filter(u -> encoder.matches(adminPassword, u.passwordHash()))
                 .forEach(u -> usuarios.exigirCambioPassword(u.id()));
     }
 
-    /** Bases creadas antes de existir esta columna. Va antes de cualquier consulta de usuarios. */
     private void agregarColumnaCambioPassword() {
         Integer columna = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM pragma_table_info('usuarios') WHERE name = 'debe_cambiar_password'", Integer.class);
@@ -60,11 +57,6 @@ public class DatosIniciales implements CommandLineRunner {
         }
     }
 
-    /**
-     * Bases con los campos anteriores (folio, titular, asunto...): se pasa cada expediente a la tabla nueva.
-     * folio → número, titular → nombre, asunto → solicitud, descripción → notas,
-     * apertura → ingreso, y CERRADO queda INACTIVO (lo demás ACTIVO).
-     */
     private void convertirFormatoAnterior() {
         Integer anterior = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM pragma_table_info('expedientes') WHERE name = 'titular'", Integer.class);

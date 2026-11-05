@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-/** Administración de usuarios. El AuthInterceptor ya garantiza que quien llama es ADMIN. */
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -41,7 +40,6 @@ public class UsuarioController {
         this.puerto = puerto;
     }
 
-    /** Dirección que el administrador comparte con los demás equipos de la oficina. */
     @GetMapping("/direccion-red")
     public Map<String, String> direccionRed() {
         return Map.of("direccion", Escritorio.direccionRed(puerto));
@@ -84,7 +82,6 @@ public class UsuarioController {
 
         usuarios.actualizar(id, Validaciones.requerido(req.nombre(), "Nombre", 120), rol, activo);
 
-        // Si el admin escribió una contraseña nueva, se restablece
         if (req.password() != null && !req.password().isEmpty()) {
             Validaciones.password(req.password());
             usuarios.cambiarPassword(id, encoder.encode(req.password()));

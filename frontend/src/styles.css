@@ -1,5 +1,3 @@
-/* ---------- Tokens ---------- */
-/* Guinda y dorado: los mismos colores del escudo y de la hoja impresa */
 :root {
   --fondo: #f6f4f1;
   --superficie: #ffffff;
@@ -97,7 +95,6 @@ button {
   min-height: 100vh;
 }
 
-/* ---------- Botones ---------- */
 .boton {
   display: inline-flex;
   align-items: center;
@@ -191,7 +188,6 @@ button {
   color: var(--peligro);
 }
 
-/* ---------- Formularios ---------- */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -231,7 +227,6 @@ button {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* Misma altura para texto, fechas y listas */
 .campo input,
 .campo select {
   height: var(--alto-control);
@@ -273,7 +268,6 @@ button {
   color: var(--gris);
 }
 
-/* Contraseña en un campo de texto: ver CampoClave.jsx */
 .clave-tapada {
   -webkit-text-security: disc;
 }
@@ -290,7 +284,6 @@ button {
   gap: 16px;
 }
 
-/* Secciones del expediente: las mismas de la hoja impresa */
 .seccion {
   display: flex;
   flex-direction: column;
@@ -324,7 +317,6 @@ button {
   min-width: 0;
 }
 
-/* Fotografía del expediente: proporción tamaño infantil, como en la impresión */
 .foto {
   display: flex;
   flex-direction: column;
@@ -358,7 +350,6 @@ button {
   gap: 4px;
 }
 
-/* Selector segmentado (estado y rol) */
 .selector-estado {
   display: flex;
   height: var(--alto-control);
@@ -470,7 +461,6 @@ button {
   margin-top: 4px;
 }
 
-/* ---------- Login ---------- */
 .login {
   min-height: 100vh;
   display: grid;
@@ -543,9 +533,8 @@ button {
   font-size: 14.5px;
 }
 
-/* ---------- Marco general ---------- */
 .marco {
-  isolation: isolate; /* la marca de agua (z-index: -1) queda sobre el fondo del body */
+  isolation: isolate;
   display: grid;
   grid-template-columns: var(--ancho-lateral) 1fr;
   min-height: 100vh;
@@ -755,12 +744,11 @@ button {
   padding: 36px 40px 56px;
 }
 
-/* Escudo de fondo como marca de agua, fijo al hacer scroll */
 .contenido::before {
   content: '';
   position: fixed;
   inset: 0;
-  left: var(--ancho-lateral); /* centrado en el área de contenido, sin contar la barra lateral */
+  left: var(--ancho-lateral);
   z-index: -1;
   background: url('/logo.png') center / min(560px, 75vw) no-repeat;
   filter: grayscale(1);
@@ -768,7 +756,6 @@ button {
   pointer-events: none;
 }
 
-/* ---------- Páginas ---------- */
 .pagina {
   max-width: 1160px;
   margin: 0 auto;
@@ -852,6 +839,49 @@ button {
   color: var(--acento);
 }
 
+.barra-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.filtro-secretaria select {
+  appearance: none;
+  width: 220px;
+  max-width: 100%;
+  height: 38px;
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236f6569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 10px center;
+  color: var(--tinta);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filtro-secretaria select:hover {
+  border-color: #b5ada6;
+}
+
+.filtro-secretaria select:focus {
+  outline: none;
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-tenue);
+}
+
+.filtro-secretaria.activo select {
+  border-color: var(--acento);
+  background-color: var(--acento-tenue);
+  color: var(--acento);
+  font-weight: 600;
+}
+
 .buscador {
   display: flex;
   align-items: center;
@@ -887,7 +917,6 @@ button {
   color: var(--gris);
 }
 
-/* La "x" de limpiar: el navegador la pinta azul */
 .buscador input::-webkit-search-cancel-button {
   appearance: none;
   width: 16px;
@@ -897,7 +926,6 @@ button {
   cursor: pointer;
 }
 
-/* ---------- Tabla ---------- */
 .tabla-marco {
   background: var(--superficie);
   border: 1px solid var(--linea);
@@ -1103,7 +1131,6 @@ button {
   margin: 4px 0 20px;
 }
 
-/* Filas de relleno mientras llega la lista */
 .esqueleto {
   display: flex;
   flex-direction: column;
@@ -1122,7 +1149,6 @@ button {
   width: 78%;
 }
 
-/* ---------- Diálogos ---------- */
 .velo {
   position: fixed;
   inset: 0;
@@ -1177,7 +1203,6 @@ button {
   margin: 0;
 }
 
-/* ---------- Carpeta (detalle de expediente) ---------- */
 .velo-lateral {
   place-items: stretch end;
   grid-template-rows: minmax(0, 1fr);
@@ -1235,7 +1260,6 @@ button {
   border-bottom: 1px solid var(--linea);
 }
 
-/* Expediente nuevo: sin metadatos, la cabeza cierra con su propia línea */
 .carpeta-cabeza:has(+ .formulario) {
   padding-bottom: 16px;
   border-bottom: 1px solid var(--linea);
@@ -1273,7 +1297,6 @@ button {
   flex: 1;
 }
 
-/* ---------- Registro (página de nuevo expediente) ---------- */
 .pagina-registro {
   max-width: 900px;
 }
@@ -1290,7 +1313,6 @@ button {
   gap: 22px;
 }
 
-/* Los botones siguen a la vista aunque el formulario sea largo */
 .registro-pie {
   position: sticky;
   bottom: 0;
@@ -1308,7 +1330,6 @@ button {
   flex: 1 0 100%;
 }
 
-/* ---------- Respaldos ---------- */
 .respaldo-cuerpo {
   display: flex;
   flex-direction: column;
@@ -1422,7 +1443,6 @@ button {
   font-size: 13px;
 }
 
-/* Aviso del menú: hace días que no se copia un respaldo */
 .aviso-respaldo {
   display: flex;
   align-items: center;
@@ -1446,7 +1466,6 @@ button {
   flex: none;
 }
 
-/* ---------- Avisos ---------- */
 .avisos {
   position: fixed;
   right: 20px;
@@ -1518,7 +1537,6 @@ button {
   }
 }
 
-/* ---------- Pantallas chicas ---------- */
 @media (max-width: 1420px) {
   .col-asunto {
     max-width: 170px;
@@ -1627,6 +1645,15 @@ button {
     align-items: stretch;
   }
 
+  .barra-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtro-secretaria select {
+    width: 100%;
+  }
+
   .buscador {
     flex: none;
     width: 100%;
@@ -1700,7 +1727,6 @@ button {
     flex: 1 0 100%;
   }
 
-  /* Inicio de sesión: la marca pasa a ser una franja arriba */
   .login {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -1740,7 +1766,6 @@ button {
   }
 }
 
-/* ---------- Hoja impresa del expediente (Impresion.jsx) ---------- */
 .hoja-impresion {
   display: none;
 }
@@ -1782,7 +1807,6 @@ button {
     print-color-adjust: exact;
   }
 
-  /* Banda superior guinda con filo dorado */
   .hoja-impresion::before {
     content: '';
     display: block;
@@ -1984,7 +2008,6 @@ button {
     font-weight: 700;
   }
 
-  /* Marco tamaño infantil con esquinas doradas */
   .hi-foto {
     position: relative;
     display: grid;
@@ -2049,7 +2072,6 @@ button {
     white-space: pre-wrap;
   }
 
-  /* Sin notas: renglones para escribir a mano */
   .hi-notas-vacias {
     background: repeating-linear-gradient(transparent 0 7.2mm, #d9dce1 7.2mm 7.45mm) #fdfcf8;
   }

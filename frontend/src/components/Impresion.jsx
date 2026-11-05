@@ -1,8 +1,6 @@
 import { createPortal } from 'react-dom';
 import { STATUS, edad, hoy } from '../api.js';
 
-// Hoja tamaño carta para imprimir un expediente. En pantalla está oculta;
-// al imprimir, styles.css esconde la aplicación y muestra solo esta hoja.
 export default function Impresion({ datos, foto }) {
   const anos = edad(datos.fechaNacimiento);
 

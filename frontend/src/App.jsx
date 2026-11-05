@@ -13,9 +13,8 @@ export default function App() {
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(Boolean(sesion.token()));
   const [vista, setVista] = useState('expedientes');
-  const [borrador, setBorrador] = useState(null); // lo escrito en "Nuevo expediente" sin guardar
+  const [borrador, setBorrador] = useState(null);
 
-  // Si hay un token guardado, recupera la sesión al abrir la página
   useEffect(() => {
     if (!sesion.token()) return;
     api
@@ -38,7 +37,6 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [vista]);
 
-  // Al crear o cancelar: se descarta el borrador y se vuelve a la lista
   const terminarNuevo = useCallback(() => {
     setVista('expedientes');
     setBorrador(null);

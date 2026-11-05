@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import Icono from './Icono.jsx';
 
-// Avisos breves en la esquina ("Expediente guardado", errores, etc.)
 const AvisosContext = createContext(() => {});
 
 export function AvisosProvider({ children }) {

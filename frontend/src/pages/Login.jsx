@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { api } from '../api.js';
 import CampoClave from '../components/CampoClave.jsx';
 
-// Panel con el escudo, compartido con la pantalla de contraseña nueva.
 export function MarcaLogin() {
   return (
     <aside className="login-marca">

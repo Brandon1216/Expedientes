@@ -22,10 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Todos los usuarios pueden consultar, crear y editar expedientes.
- * Solo los administradores pueden eliminarlos.
- */
 @RestController
 @RequestMapping("/api/expedientes")
 public class ExpedienteController {
@@ -38,8 +34,9 @@ public class ExpedienteController {
 
     @GetMapping
     public List<Expediente> listar(@RequestParam(required = false) String q,
-                                   @RequestParam(required = false) String status) {
-        return expedientes.buscar(q, status);
+                                   @RequestParam(required = false) String status,
+                                   @RequestParam(required = false) String secretaria) {
+        return expedientes.buscar(q, status, secretaria);
     }
 
     @GetMapping("/resumen")
@@ -63,12 +60,11 @@ public class ExpedienteController {
 
     @PutMapping("/{id}")
     public Expediente actualizar(@PathVariable long id, @RequestBody ExpedienteRequest req) {
-        obtener(id); // valida que exista
+        obtener(id);
         expedientes.actualizar(id, validar(req, id));
         return obtener(id);
     }
 
-    /** Devuelve los datos limpios o lanza error. id = 0 para un expediente nuevo. */
     private ExpedienteRequest validar(ExpedienteRequest req, long id) {
         String numero = Validaciones.requerido(req.numero(), "Número", 30);
         if (expedientes.numeroOcupado(numero, id)) {

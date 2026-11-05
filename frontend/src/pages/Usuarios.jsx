@@ -8,7 +8,7 @@ import { useAvisos } from '../components/Avisos.jsx';
 export default function Usuarios({ yo }) {
   const avisar = useAvisos();
   const [lista, setLista] = useState([]);
-  const [editando, setEditando] = useState(null); // usuario, o {} para uno nuevo
+  const [editando, setEditando] = useState(null);
   const [eliminando, setEliminando] = useState(null);
 
   const cargar = useCallback(() => {
