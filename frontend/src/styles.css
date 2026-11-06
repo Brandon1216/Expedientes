@@ -1466,6 +1466,523 @@ button {
   flex: none;
 }
 
+.aud-pagina {
+  max-width: 1280px;
+}
+
+.aud-exportar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aud-controles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.aud-fila-controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aud-filtros {
+  justify-content: flex-start;
+}
+
+.aud-buscador {
+  flex: 0 1 380px;
+}
+
+.aud-rangos {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.aud-rangos button {
+  height: 36px;
+  padding: 0 12px;
+  border: none;
+  border-right: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 13.5px;
+}
+
+.aud-rangos button:last-child {
+  border-right: none;
+}
+
+.aud-rangos button:hover {
+  background: var(--superficie-suave);
+}
+
+.aud-rangos button.activo {
+  background: var(--acento);
+  color: #fff;
+  font-weight: 600;
+}
+
+.aud-campo {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.aud-campo > span {
+  color: var(--gris);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.aud-campo select,
+.aud-campo input {
+  height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 14px;
+}
+
+.aud-campo select {
+  min-width: 150px;
+}
+
+.aud-interruptor {
+  height: 36px;
+  font-size: 13.5px;
+  color: var(--texto);
+}
+
+.aud-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.aud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px 0 10px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 6px;
+  background: var(--superficie-suave);
+  color: var(--tinta);
+  font-size: 13px;
+}
+
+.aud-chip:hover {
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+.aud-limpiar {
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  background: none;
+  color: var(--acento);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.aud-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.aud-resumen > div {
+  flex: 1 1 160px;
+  padding: 12px 16px;
+  border-right: 1px solid var(--linea-suave);
+}
+
+.aud-resumen > div:last-child {
+  border-right: none;
+}
+
+.aud-resumen dt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--gris);
+  font-size: 12.5px;
+}
+
+.aud-resumen dd {
+  margin: 2px 0 0;
+  color: var(--tinta);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.aud-resumen .aud-resumen-alerta dt,
+.aud-resumen .aud-resumen-alerta dd {
+  color: var(--peligro);
+}
+
+.aud-scroll {
+  max-height: calc(100vh - 230px);
+  min-height: 240px;
+  overflow: auto;
+}
+
+.aud-tabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.aud-tabla td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.aud-dia th {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--linea);
+  background: var(--fondo);
+  color: var(--tinta);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.aud-fila:hover {
+  background: var(--superficie-suave);
+}
+
+.aud-fila-critica {
+  background: #fdf5f4;
+}
+
+.aud-fila-critica:hover {
+  background: #fbeceb;
+}
+
+.aud-fila-critica td:first-child {
+  box-shadow: inset 3px 0 0 var(--peligro);
+}
+
+.aud-col-hora {
+  white-space: nowrap;
+}
+
+.aud-col-hora time,
+.aud-col-hora > span {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.aud-col-hora small,
+.aud-secundario,
+.aud-persona small,
+.aud-equipo small {
+  display: block;
+  color: var(--gris);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.aud-persona {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 190px;
+}
+
+.aud-avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 11.5px;
+}
+
+.aud-persona strong {
+  display: block;
+  color: var(--tinta);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.aud-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--texto);
+  white-space: nowrap;
+}
+
+.aud-accion svg {
+  flex: none;
+}
+
+.aud-crear svg {
+  color: var(--activo);
+}
+
+.aud-editar svg {
+  color: #8a6212;
+}
+
+.aud-sesion svg {
+  color: var(--gris);
+}
+
+.aud-critica {
+  color: var(--peligro);
+  font-weight: 700;
+}
+
+.aud-col-que {
+  min-width: 260px;
+}
+
+.aud-enlace {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--acento);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.aud-numero {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.aud-eliminado {
+  color: var(--peligro);
+  font-size: 13px;
+}
+
+.aud-ver-cambios {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--gris);
+  font-size: 13px;
+  text-align: left;
+}
+
+.aud-ver-cambios:hover {
+  color: var(--acento);
+}
+
+.aud-detalle td {
+  padding: 0 16px 14px;
+  background: var(--superficie-suave);
+}
+
+.aud-diferencias {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.aud-diferencias > div {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.aud-diferencias dt {
+  color: var(--gris);
+}
+
+.aud-diferencias dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.aud-diferencias del {
+  color: var(--peligro);
+}
+
+.aud-diferencias ins {
+  color: var(--activo);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.aud-diferencias svg {
+  flex: none;
+  color: var(--gris);
+}
+
+.aud-equipo {
+  white-space: nowrap;
+}
+
+.aud-en-linea {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--activo);
+  font-weight: 600;
+}
+
+.aud-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.aud-estado-alerta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #8a6212;
+  font-weight: 600;
+}
+
+.aud-alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aud-alertas li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #8a6212;
+  font-size: 12.5px;
+}
+
+.aud-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.aud-paginas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .aud-buscador {
+    flex: 1 1 100%;
+  }
+
+  .aud-rangos {
+    width: 100%;
+  }
+
+  .aud-rangos button {
+    flex: 1 1 auto;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .aud-campo {
+    flex: 1 1 100%;
+  }
+
+  .aud-campo select,
+  .aud-campo input {
+    flex: 1;
+  }
+
+  .aud-scroll {
+    max-height: none;
+  }
+
+  .aud-tabla thead {
+    display: none;
+  }
+
+  .aud-tabla tr.aud-fila {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .aud-tabla tr.aud-fila td {
+    padding: 0;
+    border: none;
+  }
+
+  .aud-tabla tr.aud-fila td::before {
+    content: attr(data-etiqueta);
+    display: block;
+    color: var(--gris);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .aud-fila-critica td:first-child {
+    box-shadow: none;
+  }
+
+  .aud-fila-critica {
+    box-shadow: inset 3px 0 0 var(--peligro);
+  }
+
+  .aud-dia th {
+    display: block;
+  }
+
+  .aud-col-que,
+  .aud-persona {
+    min-width: 0;
+  }
+
+  .aud-diferencias > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .aud-detalle td {
+    display: block;
+    padding: 0 14px 12px;
+  }
+}
+
 .avisos {
   position: fixed;
   right: 20px;

@@ -134,7 +134,7 @@ export default function Respaldos() {
             <ul className="respaldo-historial">
               {historial.map((c) => (
                 <li key={c.archivo}>
-                  <strong className="numero">
+                  <strong>
                     {formatoFecha(c.fecha)}, {c.fecha.slice(11, 16)}
                   </strong>
                   <span>

@@ -44,6 +44,27 @@ const trazos = {
       <path d="M11 5.2v.1M13 5.2v.1" />
     </>
   ),
+  historial: (
+    <>
+      <path d="M4 12a8 8 0 1 0 2.3-5.6" />
+      <path d="M4 4v3.5h3.5M12 8v4.5l3 1.8" />
+    </>
+  ),
+  entrar: (
+    <>
+      <path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4" />
+      <path d="M14 8l4 4-4 4M18 12H8" />
+    </>
+  ),
+  abajo: <path d="m6 9 6 6 6-6" />,
+  arriba: <path d="m6 15 6-6 6 6" />,
+  flecha: <path d="M5 12h14M13 6l6 6-6 6" />,
+  descargar: (
+    <>
+      <path d="M12 4v11M7 10l5 5 5-5" />
+      <path d="M5 19h14" />
+    </>
+  ),
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
   alerta: (
     <>

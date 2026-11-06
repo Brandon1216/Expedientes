@@ -63,6 +63,11 @@ export default function Marco({ usuario, vista, onVista, onSalir, children }) {
             </button>
           )}
           {esAdmin && (
+            <button className={vista === 'auditoria' ? 'activo' : ''} onClick={() => ir('auditoria')}>
+              <Icono nombre="historial" /> Auditoría
+            </button>
+          )}
+          {esAdmin && (
             <button className={vista === 'respaldos' ? 'activo' : ''} onClick={() => ir('respaldos')}>
               <Icono nombre="usb" /> Respaldos
             </button>

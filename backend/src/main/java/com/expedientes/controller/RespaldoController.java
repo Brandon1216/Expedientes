@@ -7,7 +7,9 @@ import com.expedientes.dto.Dtos.CopiaHecha;
 import com.expedientes.dto.Dtos.CopiarUsbRequest;
 import com.expedientes.dto.Dtos.EstadoRespaldos;
 import com.expedientes.model.Usuario;
+import com.expedientes.repository.AuditoriaRepository;
 import com.expedientes.security.AuthInterceptor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -22,9 +24,11 @@ public class RespaldoController {
     private static final int DIAS_PARA_AVISAR = 7;
 
     private final CopiaUsb copiaUsb;
+    private final AuditoriaRepository auditoria;
 
-    public RespaldoController(CopiaUsb copiaUsb) {
+    public RespaldoController(CopiaUsb copiaUsb, AuditoriaRepository auditoria) {
         this.copiaUsb = copiaUsb;
+        this.auditoria = auditoria;
     }
 
     @GetMapping("/aviso")
@@ -42,9 +46,11 @@ public class RespaldoController {
 
     @PostMapping("/copiar")
     public CopiaHecha copiar(@RequestAttribute(AuthInterceptor.ATRIBUTO_USUARIO) Usuario yo,
-                             @RequestBody CopiarUsbRequest req) {
+                             @RequestBody CopiarUsbRequest req, HttpServletRequest peticion) {
         soloAdmin(yo);
-        return copiaUsb.copiar(req.unidad(), yo.nombre());
+        CopiaHecha copia = copiaUsb.copiar(req.unidad(), yo.nombre());
+        auditoria.registrar(yo, peticion.getRemoteAddr(), "COPIA_USB", copia.unidad(), copia.archivo());
+        return copia;
     }
 
     private static void soloAdmin(Usuario yo) {

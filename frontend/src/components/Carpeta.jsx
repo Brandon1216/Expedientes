@@ -30,7 +30,7 @@ export default function Carpeta({ expediente, esAdmin, onCerrar, onGuardado }) {
     setError('');
     setGuardando(true);
     try {
-      await api.actualizarExpediente(expediente.id, form);
+      await api.actualizarExpediente(expediente.id, { ...form, actualizadoEn: expediente.actualizadoEn });
       onGuardado('Cambios guardados');
     } catch (err) {
       setError(err.message);

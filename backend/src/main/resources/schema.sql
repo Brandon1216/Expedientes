@@ -18,6 +18,36 @@ CREATE TABLE IF NOT EXISTS copias_usb (
     usuario  TEXT    NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS sesiones (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id       INTEGER NOT NULL,
+    usuario          TEXT    NOT NULL,
+    nombre           TEXT,
+    equipo           TEXT,
+    equipo_nombre    TEXT,
+    inicio           TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    ultima_actividad TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    fin              TEXT,
+    motivo_fin       TEXT
+);
+
+CREATE TABLE IF NOT EXISTS auditoria (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    fecha      TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    usuario_id INTEGER,
+    usuario    TEXT    NOT NULL,
+    nombre     TEXT,
+    equipo     TEXT,
+    accion     TEXT    NOT NULL,
+    expediente_id INTEGER,
+    objeto     TEXT,
+    detalle    TEXT,
+    cambios    TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_auditoria_fecha ON auditoria(fecha);
+CREATE INDEX IF NOT EXISTS idx_sesiones_inicio ON sesiones(inicio);
+
 CREATE TABLE IF NOT EXISTS expedientes (
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
     numero                  TEXT    UNIQUE,

@@ -30,7 +30,8 @@ public final class Dtos {
     public record ExpedienteRequest(String numero, String status, String fechaIngreso, String nombre,
                                     String fechaNacimiento, String solicitud, String secretaria, String perfil,
                                     String telefono, String familiarSindicalizado, String parentesco,
-                                    String dependenciaFamiliar, String notas, String fotografia) {
+                                    String dependenciaFamiliar, String notas, String fotografia,
+                                    String actualizadoEn) {
     }
 
     public record Resumen(long total, long activos, long inactivos) {
@@ -52,5 +53,24 @@ public final class Dtos {
     }
 
     public record AvisoRespaldo(Integer dias, boolean avisar) {
+    }
+
+    public record Movimiento(long id, String fecha, String usuario, String nombre, String equipo,
+                             String equipoNombre, String accion, Long expedienteId, boolean expedienteExiste,
+                             String objeto, String detalle, String cambios) {
+    }
+
+    public record SesionRegistro(long id, String usuario, String nombre, String equipo, String equipoNombre,
+                                 String inicio, String ultimaActividad, String fin, String motivoFin, String estado,
+                                 boolean simultanea, boolean equipoNuevo, boolean fueraDeHorario) {
+    }
+
+    public record Pagina<T>(long total, java.util.List<T> filas) {
+    }
+
+    public record ResumenAuditoria(long movimientos, long expedientes, long eliminaciones, long usuarios) {
+    }
+
+    public record Cambio(String campo, String antes, String despues) {
     }
 }

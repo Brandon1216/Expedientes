@@ -10,7 +10,7 @@ const FILTROS = [
   { valor: 'INACTIVO', etiqueta: 'Inactivos', clave: 'inactivos' },
 ];
 
-export default function Expedientes({ usuario, onNuevo }) {
+export default function Expedientes({ usuario, onNuevo, abrirId, onAbierto }) {
   const avisar = useAvisos();
   const [lista, setLista] = useState([]);
   const [resumen, setResumen] = useState(null);
@@ -36,6 +36,15 @@ export default function Expedientes({ usuario, onNuevo }) {
     const t = setTimeout(cargar, texto ? 250 : 0);
     return () => clearTimeout(t);
   }, [cargar, texto]);
+
+  useEffect(() => {
+    if (!abrirId) return;
+    api
+      .expediente(abrirId)
+      .then(setAbierto)
+      .catch(() => avisar('Ese expediente ya no existe.', 'error'))
+      .finally(onAbierto);
+  }, [abrirId, onAbierto, avisar]);
 
   const alGuardar = (mensaje) => {
     avisar(mensaje);

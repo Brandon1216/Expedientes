@@ -44,6 +44,14 @@ export const api = {
   login: (usuario, password) => peticion('/auth/login', { metodo: 'POST', datos: { usuario, password } }),
   yo: () => peticion('/auth/yo'),
   cambiarPassword: (actual, nueva) => peticion('/auth/password', { metodo: 'PUT', datos: { actual, nueva } }),
+  salir: () => peticion('/auth/salir', { metodo: 'POST' }),
+
+  auditoria: (tipo, filtros) => {
+    const params = new URLSearchParams(Object.entries(filtros).filter(([, v]) => v !== '' && v != null));
+    const qs = params.toString();
+    return peticion(`/auditoria/${tipo}${qs ? `?${qs}` : ''}`);
+  },
+  usuariosAuditoria: () => peticion('/auditoria/usuarios'),
 
   expedientes: (q = '', status = '', secretaria = '') => {
     const params = new URLSearchParams();

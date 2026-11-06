@@ -46,13 +46,16 @@ public class TokenService {
         }
     }
 
-    public String generar(long idUsuario) {
+    public record Sesion(long idUsuario, long idSesion) {
+    }
+
+    public String generar(long idUsuario, long idSesion) {
         long expira = Instant.now().getEpochSecond() + segundosValidez;
-        String datos = ENC.encodeToString((idUsuario + "|" + expira).getBytes(StandardCharsets.UTF_8));
+        String datos = ENC.encodeToString((idUsuario + "|" + expira + "|" + idSesion).getBytes(StandardCharsets.UTF_8));
         return datos + "." + firmar(datos);
     }
 
-    public Long validar(String token) {
+    public Sesion validar(String token) {
         if (token == null) {
             return null;
         }
@@ -67,9 +70,13 @@ public class TokenService {
         }
         try {
             String[] datos = new String(DEC.decode(partes[0]), StandardCharsets.UTF_8).split("\\|");
+            if (datos.length != 3) {
+                return null;
+            }
             long id = Long.parseLong(datos[0]);
             long expira = Long.parseLong(datos[1]);
-            return Instant.now().getEpochSecond() < expira ? id : null;
+            long sesion = Long.parseLong(datos[2]);
+            return Instant.now().getEpochSecond() < expira ? new Sesion(id, sesion) : null;
         } catch (RuntimeException e) {
             return null;
         }

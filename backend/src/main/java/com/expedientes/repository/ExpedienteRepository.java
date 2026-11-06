@@ -132,23 +132,23 @@ public class ExpedienteRepository {
         return id == null ? 0 : id;
     }
 
-    public void actualizar(long id, ExpedienteRequest d) {
-        jdbc.update("""
+    public boolean actualizar(long id, ExpedienteRequest d, String versionVista) {
+        return jdbc.update("""
                         UPDATE expedientes
                         SET numero = ?, status = ?, fecha_ingreso = ?, nombre = ?, fecha_nacimiento = ?,
                             solicitud = ?, secretaria = ?, perfil = ?, telefono = ?,
                             familiar_sindicalizado = ?, parentesco = ?, dependencia_familiar = ?, notas = ?,
                             fotografia = CASE WHEN ? IS NULL THEN fotografia ELSE NULLIF(?, '') END,
-                            actualizado_en = datetime('now', 'localtime')
-                        WHERE id = ?""",
+                            actualizado_en = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')
+                        WHERE id = ? AND (? IS NULL OR actualizado_en = ?)""",
                 d.numero(), d.status(), d.fechaIngreso(), d.nombre(), d.fechaNacimiento(),
                 d.solicitud(), d.secretaria(), d.perfil(), d.telefono(),
                 d.familiarSindicalizado(), d.parentesco(), d.dependenciaFamiliar(), d.notas(),
-                d.fotografia(), d.fotografia(), id);
+                d.fotografia(), d.fotografia(), id, versionVista, versionVista) > 0;
     }
 
-    public void eliminar(long id) {
-        jdbc.update("DELETE FROM expedientes WHERE id = ?", id);
+    public boolean eliminar(long id) {
+        return jdbc.update("DELETE FROM expedientes WHERE id = ?", id) > 0;
     }
 
     public Resumen resumen() {
